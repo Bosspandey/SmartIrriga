@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartIrriga | Smart Irrigation System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0b1120;
+            --bg2: #111827;
+            --glass: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --green: #10b981;
+            --green2: #34d399;
+            --blue: #38bdf8;
+            --blue2: #0ea5e9;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --card: rgba(17, 24, 39, 0.7);
+            --accent: #10b981;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        /* ─── NOISE TEXTURE OVERLAY ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+        }
+
+        /* ─── NAV ─── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 18px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(20px);
+            background: rgba(11, 17, 32, 0.7);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+        }
+
+        .nav-logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--green2);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+
+        .nav-logo span {
+            color: var(--blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--green2);
+        }
+
+        .nav-cta {
+            background: var(--green);
+            color: #000;
+            padding: 9px 22px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .nav-cta:hover {
+            background: var(--green2);
+            transform: translateY(-1px);
+        }
+
+        /* ─── HERO ─── */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            padding: 100px 5% 60px;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 10%, rgba(16, 185, 129, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 20% 80%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 30% at 80% 70%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+        }
+
+        /* Animated rings */
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            animation: pulse-ring 4s ease-in-out infinite;
+        }
+
+        .ring:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 0s;
+        }
+
+        .ring:nth-child(2) {
+            width: 650px;
+            height: 650px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 0.8s;
+        }
+
+        .ring:nth-child(3) {
+            width: 900px;
+            height: 900px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 1.6s;
+        }
+
+        @keyframes pulse-ring {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                opacity: 0.06;
+                transform: translate(-50%, -50%) scale(1.04);
+            }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 50px;
+            padding: 7px 18px;
+            font-size: 0.78rem;
+            color: var(--green2);
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            animation: fade-up 0.8s ease both;
+        }
+
+        .hero-badge i {
+            font-size: 0.7rem;
+        }
+
+        @keyframes shimmerText {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.8rem, 6.5vw, 6rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+            margin-bottom: 24px;
+            text-shadow: 0 10px 50px rgba(0, 232, 228, 0.2);
+            position: relative;
+            animation: fade-up 0.8s ease 0.1s both;
+        }
+
+        .hero-title .highlight {
+            background: linear-gradient(to right, var(--green) 0%, var(--green2) 30%, var(--blue) 70%, var(--green) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmerText 5s linear infinite;
+        }
+
+        .hero-tagline {
+            color: var(--muted);
+            font-size: 1.15rem;
+            max-width: 560px;
+            margin: 0 auto 40px;
+            font-weight: 300;
+            animation: fade-up 0.8s ease 0.2s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fade-up 0.8s ease 0.3s both;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--green) 0%, #059669 100%);
+            color: #000;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 40px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s;
+            backdrop-filter: blur(10px);
+            background: var(--glass);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--green);
+            color: var(--green2);
+            transform: translateY(-3px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+            margin-top: 70px;
+            flex-wrap: wrap;
+            animation: fade-up 0.8s ease 0.4s both;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--green2);
+            line-height: 1;
+        }
+
+        .hero-stat-label {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Floating chips */
+        .hero-chips {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 36px;
+            animation: fade-up 0.8s ease 0.5s both;
+        }
+
+        .chip {
+            background: rgba(16, 185, 129, 0.07);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 50px;
+            padding: 5px 14px;
+            font-size: 0.78rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chip i {
+            color: var(--green);
+            font-size: 0.7rem;
+        }
+
+        /* ─── SECTIONS ─── */
+        section {
+            padding: 90px 5%;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--green);
+            margin-bottom: 16px;
+        }
+
+        .section-label::before {
+            content: '';
+            display: block;
+            width: 20px;
+            height: 1px;
+            background: var(--green);
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+
+        .section-sub {
+            color: var(--muted);
+            max-width: 600px;
+            font-size: 1rem;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .center .section-label {
+            justify-content: center;
+        }
+
+        .center .section-label::before {
+            display: none;
+        }
+
+        .center .section-sub {
+            margin: 0 auto;
+        }
+
+        /* Divider */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.2), transparent);
+            margin: 0;
+        }
+
+        /* ─── ABOUT ─── */
+        #about {
+            background: var(--bg2);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        .problem-card,
+        .solution-card {
+            padding: 40px;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-card {
+            background: rgba(244, 63, 94, 0.05);
+            border: 1px solid rgba(244, 63, 94, 0.2);
+        }
+
+        .solution-card {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .card-icon-wrap {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        .problem-card .card-icon-wrap {
+            background: rgba(251, 113, 133, 0.12);
+            color: #ff6060;
+        }
+
+        .solution-card .card-icon-wrap {
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--green2);
+        }
+
+        .card-title-small {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .card-text {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .about-points {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .about-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .about-point i {
+            color: var(--green);
+            margin-top: 4px;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        /* ─── TEAM ─── */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+            margin-top: 50px;
+        }
+
+        .team-card {
+            background: var(--card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px 28px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.35s;
+        }
+
+        .team-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--green);
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.12);
+        }
+
+        .team-card:hover::before {
+            opacity: 1;
+        }
+
+        .team-avatar {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green) 0%, var(--blue) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #000;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .team-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .team-id {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .team-role {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 50px;
+            padding: 5px 12px;
+            font-size: 0.77rem;
+            color: var(--green2);
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ─── HOW IT WORKS ─── */
+        #how {
+            background: var(--bg2);
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 50px;
+            position: relative;
+        }
+
+        .steps::before {
+            content: '';
+            position: absolute;
+            left: 34px;
+            top: 50px;
+            bottom: 50px;
+            width: 2px;
+            background: linear-gradient(180deg, var(--green) 0%, var(--blue) 100%);
+        }
+
+        .step {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            padding: 24px 30px 24px 0;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step:hover .step-body {
+            transform: translateX(5px);
+        }
+
+        .step-num {
+            width: 70px;
+            height: 70px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: var(--bg2);
+            border: 2px solid var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--green2);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+            transition: all 0.3s;
+        }
+
+        .step:hover .step-num {
+            background: var(--green);
+            color: #000;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+        }
+
+        .step-body {
+            transition: transform 0.3s;
+        }
+
+        .step-body h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+
+        .step-body p {
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .step-icon {
+            font-size: 1.1rem;
+            color: var(--green);
+            margin-bottom: 8px;
+        }
+
+        /* ─── TECH STACK ─── */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .tech-panel {
+            border-radius: 20px;
+            padding: 36px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .tech-panel.hw {
+            background: rgba(0, 100, 200, 0.06);
+            border-color: rgba(56, 189, 248, 0.2);
+        }
+
+        .tech-panel.sw {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .tech-panel-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tech-panel.hw .tech-panel-title {
+            color: var(--blue);
+        }
+
+        .tech-panel.sw .tech-panel-title {
+            color: var(--green2);
+        }
+
+        .tech-items {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .tech-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.25s;
+        }
+
+        .tech-item:hover {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: rgba(16, 185, 129, 0.15);
+        }
+
+        .tech-item-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .hw .tech-item-icon {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--blue);
+        }
+
+        .sw .tech-item-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--green2);
+        }
+
+        .tech-item-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .tech-item-desc {
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        /* ─── COMPONENTS ─── */
+        .comp-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 50px;
+        }
+
+        .comp-card {
+            background: var(--card);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 30px 24px;
+            transition: all 0.35s;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comp-card:hover {
+            border-color: rgba(16, 185, 129, 0.4);
+            transform: translateY(-5px);
+        }
+
+        .comp-img-box {
+            height: 160px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.04) 0%, rgba(0, 100, 200, 0.04) 100%);
+            border: 1px dashed rgba(16, 185, 129, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .comp-card:hover .comp-img-box {
+            border-color: var(--green);
+        }
+
+        .comp-img-box span {
+            font-size: 2.5rem;
+        }
+
+        .comp-img-box small {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .comp-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .comp-desc {
+            font-size: 0.88rem;
+            color: var(--muted);
+            line-height: 1.7;
+            flex-grow: 1;
+        }
+
+        .comp-buy {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--glass);
+            color: var(--green2);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 10px 20px;
+            text-decoration: none;
+            transition: all 0.25s;
+            align-self: flex-start;
+            margin-top: 4px;
+        }
+
+        .comp-buy:hover {
+            background: var(--green);
+            color: #000;
+            border-color: var(--green);
+            transform: translateY(-2px);
+        }
+
+        /* ─── DIAGRAMS ─── */
+        #diagrams {
+            background: var(--bg2);
+        }
+
+        .diagrams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 50px;
+        }
+
+        .diagram-card {
+            background: var(--card);
+            border: 1px dashed rgba(16, 185, 129, 0.25);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .diagram-card:hover {
+            border-color: var(--green);
+            transform: translateY(-3px);
+        }
+
+        .diagram-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.04) 0%, rgba(0, 100, 200, 0.04) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .diagram-placeholder i {
+            font-size: 2rem;
+            color: rgba(16, 185, 129, 0.3);
+        }
+
+        .diagram-label {
+            padding: 16px 20px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .diagram-label span {
+            font-size: 0.72rem;
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        /* ─── SIMULATION ─── */
+        .sim-card {
+            margin-top: 50px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(0, 210, 120, 0.08) 0%, rgba(0, 100, 200, 0.08) 100%);
+            border: 1px solid var(--glass-border);
+            padding: 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sim-card::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 210, 120, 0.08) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .sim-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--green) 0%, var(--blue2) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #fff;
+            margin: 0 auto 28px;
+            box-shadow: 0 10px 40px rgba(0, 210, 120, 0.3);
+        }
+
+        .sim-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .sim-desc {
+            color: var(--muted);
+            max-width: 500px;
+            margin: 0 auto 32px;
+        }
+
+        .sim-url {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 16px;
+            word-break: break-all;
+        }
+
+        /* ─── PROTOTYPE ─── */
+        .proto-card {
+            margin-top: 50px;
+            border-radius: 24px;
+            border: 2px dashed rgba(0, 210, 120, 0.2);
+            background: rgba(0, 210, 120, 0.02);
+            min-height: 360px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            color: var(--muted);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            padding: 60px;
+        }
+
+        .proto-card i {
+            font-size: 3rem;
+            color: rgba(0, 210, 120, 0.25);
+        }
+
+        .proto-card h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .proto-card p {
+            font-size: 0.9rem;
+            max-width: 400px;
+        }
+
+        /* ─── FEATURES ─── */
+        #features {
+            background: var(--bg2);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: var(--card);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 30px 24px;
+            transition: all 0.35s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--green), var(--blue));
+            transform: scaleX(0);
+            transition: transform 0.35s;
+            transform-origin: left;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 210, 120, 0.4);
+        }
+
+        .feature-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(0, 210, 120, 0.12) 0%, rgba(0, 100, 200, 0.12) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--green2);
+            margin-bottom: 18px;
+        }
+
+        .feature-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        /* ─── FUTURE SCOPE ─── */
+        .future-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .future-item {
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+            padding: 24px;
+            background: var(--card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+
+        .future-item:hover {
+            border-color: var(--green);
+            transform: translateX(4px);
+        }
+
+        .future-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: rgba(0, 210, 120, 0.18);
+            line-height: 1;
+            flex-shrink: 0;
+            width: 40px;
+        }
+
+        .future-body h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .future-body p {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: var(--bg2);
+            border-top: 1px solid rgba(0, 210, 120, 0.1);
+            padding: 60px 5% 40px;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--green2);
+            margin-bottom: 8px;
+        }
+
+        .footer-logo span {
+            color: var(--blue);
+        }
+
+        .footer-sub {
+            color: var(--muted);
+            font-size: 0.88rem;
+            margin-bottom: 36px;
+        }
+
+        .footer-info {
+            color: var(--muted);
+            font-size: 0.85rem;
+            line-height: 2;
+        }
+
+        .footer-info strong {
+            color: var(--text);
+        }
+
+        .footer-copy {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        /* ─── SCROLL ANIMATIONS ─── */
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered children */
+        .stagger-children>* {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .stagger-children.visible>*:nth-child(1) {
+            opacity: 1;
+            transform: none;
+            transition-delay: 0s;
+        }
+
+        .stagger-children.visible>*:nth-child(2) {
+            opacity: 1;
+            transform: none;
+            transition-delay: 0.1s;
+        }
+
+        .stagger-children.visible>*:nth-child(3) {
+            opacity: 1;
+            transform: none;
+            transition-delay: 0.2s;
+        }
+
+        .stagger-children.visible>*:nth-child(4) {
+            opacity: 1;
+            transform: none;
+            transition-delay: 0.3s;
+        }
+
+        .stagger-children.visible>*:nth-child(5) {
+            opacity: 1;
+            transform: none;
+            transition-delay: 0.4s;
+        }
+
+        .stagger-children.visible>*:nth-child(6) {
+            opacity: 1;
+            transform: none;
+            transition-delay: 0.5s;
+        }
+
+        /* ─── MOBILE ─── */
+        @media (max-width: 768px) {
+            nav {
+                padding: 14px 5%;
+            }
+
+            .nav-links,
+            .nav-cta {
+                display: none;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .tech-grid,
+            .comp-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps::before {
+                left: 34px;
+            }
+
+            .sim-card {
+                padding: 40px 24px;
+            }
+
+            .hero-stats {
+                gap: 30px;
+            }
+
+            section {
+                padding: 70px 5%;
+            }
+        }
+
+        /* ─── CURSOR GLOW ─── */
+        .cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(circle, rgba(0, 210, 120, 0.04) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            transition: all 0.2s ease;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 210, 120, 0.3);
+            border-radius: 3px;
+        }
+
+        /* ─── MODAL ─── */
+        .team-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .team-modal.active {
+            pointer-events: all;
+            opacity: 1;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(4, 13, 18, 0.8);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: var(--card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            z-index: 1;
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+        }
+
+        .team-modal.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 60, 60, 0.1);
+            color: #ff4444;
+            border-color: rgba(255, 60, 60, 0.3);
+        }
+
+        .modal-body {
+            margin-top: 30px;
+            text-align: left;
+            padding-top: 24px;
+            border-top: 1px dashed var(--glass-border);
+        }
+
+        .modal-body h4 {
+            font-family: 'Syne', sans-serif;
+            color: var(--text);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .modal-body p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- NAV -->
+    <nav>
+        <a href="#hero" class="nav-logo">Smart<span>Irriga</span></a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#team">Team</a></li>
+            <li><a href="#how">How It Works</a></li>
+            <li><a href="#components">Components</a></li>
+            <li><a href="#tech">Tech Stack</a></li>
+            <li><a href="#simulation">Simulation</a></li>
+        </ul>
+        <a href="https://wokwi.com/projects/459370023991482369" target="_blank" class="nav-cta">
+            <i class="fas fa-play"></i> Live Demo
+        </a>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero">
+        <div class="hero-bg">
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+        </div>
+
+        <div style="position:relative;z-index:2;">
+            <div class="hero-badge"><i class="fas fa-leaf"></i> LPBEI-III · BCA · TMU · 2026</div>
+
+            <h1 class="hero-title">
+                Internet-Controlled <span class="highlight">Water</span><br>
+                <span class="highlight">Irrigation</span> System Using IoT
+            </h1>
+
+            <p class="hero-tagline">
+                Smart farming powered by IoT & real-time data —<br>
+                automating irrigation so every drop counts.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="https://wokwi.com/projects/459370023991482369" target="_blank" class="btn-primary">
+                    <i class="fas fa-play-circle"></i> View Simulation
+                </a>
+                <a href="#about" class="btn-outline">
+                    <i class="fas fa-arrow-down"></i> Explore Project
+                </a>
+            </div>
+
+            <div class="hero-chips">
+                <span class="chip"><i class="fas fa-microchip"></i> ESP32</span>
+                <span class="chip"><i class="fas fa-seedling"></i> Soil Moisture Sensor</span>
+                <span class="chip"><i class="fas fa-thermometer-half"></i> DHT11</span>
+                <span class="chip"><i class="fas fa-wifi"></i> Blynk IoT</span>
+                <span class="chip"><i class="fas fa-flask"></i> Wokwi</span>
+            </div>
+
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-num">6</div>
+                    <div class="hero-stat-label">Team Members</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num">5+</div>
+                    <div class="hero-stat-label">Components</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num">40%</div>
+                    <div class="hero-stat-label">Water Saved</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num">24/7</div>
+                    <div class="hero-stat-label">Auto Monitoring</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ABOUT -->
+    <section id="about">
+        <div class="section-label">The Challenge & Solution</div>
+        <h2 class="section-title">Why AquaSync IoT?</h2>
+        <p class="section-sub">Traditional irrigation is wasteful and manual. We built a smarter alternative.</p>
+
+        <div class="about-grid reveal stagger-children">
+            <div class="problem-card">
+                <div class="card-icon-wrap"><i class="fas fa-exclamation-triangle"></i></div>
+                <h3 class="card-title-small">🚨 The Problem</h3>
+                <p class="card-text">Manual irrigation in Indian agriculture causes massive water wastage. Farmers
+                    irrigate on fixed schedules — not based on actual soil needs — leading to over-watering, crop
+                    damage, and rising water bills.</p>
+                <div class="about-points">
+                    <div class="about-point"><i class="fas fa-times-circle"></i> No real-time soil data</div>
+                    <div class="about-point"><i class="fas fa-times-circle"></i> Over-irrigation damages roots</div>
+                    <div class="about-point"><i class="fas fa-times-circle"></i> Cannot monitor remotely</div>
+                    <div class="about-point"><i class="fas fa-times-circle"></i> High manual labour costs</div>
+                </div>
+            </div>
+
+            <div class="solution-card">
+                <div class="card-icon-wrap"><i class="fas fa-lightbulb"></i></div>
+                <h3 class="card-title-small">✅ Our Solution</h3>
+                <p class="card-text">AquaSync IoT automates the entire irrigation process using ESP32, soil moisture &
+                    DHT11 sensors, and the Blynk IoT cloud — enabling smart, data-driven irrigation from anywhere.</p>
+                <div class="about-points">
+                    <div class="about-point"><i class="fas fa-check-circle"></i> Real-time sensor monitoring</div>
+                    <div class="about-point"><i class="fas fa-check-circle"></i> Automated pump control via relay</div>
+                    <div class="about-point"><i class="fas fa-check-circle"></i> Remote access via mobile app</div>
+                    <div class="about-point"><i class="fas fa-check-circle"></i> Tested with Wokwi simulation</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Brief -->
+        <div style="margin-top:40px; padding:36px; background:rgba(0,210,120,0.04); border:1px solid rgba(0,210,120,0.15); border-radius:20px;"
+            class="reveal">
+            <div class="section-label">Key Modules</div>
+            <div
+                style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;margin-top:20px;">
+                <div style="display:flex;gap:12px;align-items:center;">
+                    <div
+                        style="width:40px;height:40px;border-radius:10px;background:rgba(0,210,120,0.1);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:1rem;flex-shrink:0;">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;font-size:0.9rem;">Sensor Data Acquisition</div>
+                        <div style="color:var(--muted);font-size:0.8rem;">Soil & DHT11 readings</div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;align-items:center;">
+                    <div
+                        style="width:40px;height:40px;border-radius:10px;background:rgba(0,210,120,0.1);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:1rem;flex-shrink:0;">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;font-size:0.9rem;">Automated Decision</div>
+                        <div style="color:var(--muted);font-size:0.8rem;">If/Then smart logic</div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;align-items:center;">
+                    <div
+                        style="width:40px;height:40px;border-radius:10px;background:rgba(0,210,120,0.1);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:1rem;flex-shrink:0;">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;font-size:0.9rem;">Remote Monitoring</div>
+                        <div style="color:var(--muted);font-size:0.8rem;">Via Blynk mobile app</div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;align-items:center;">
+                    <div
+                        style="width:40px;height:40px;border-radius:10px;background:rgba(0,210,120,0.1);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:1rem;flex-shrink:0;">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;font-size:0.9rem;">Water Control</div>
+                        <div style="color:var(--muted);font-size:0.8rem;">Relay-operated pump</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- TEAM -->
+    <section id="team">
+        <div class="center">
+            <div class="section-label">The People Behind It</div>
+            <h2 class="section-title">Meet Our Team</h2>
+            <p class="section-sub">Six passionate BCA students from Teerthanker Mahaveer University, Moradabad.</p>
+        </div>
+
+        <div class="team-grid stagger-children">
+
+            <div class="team-card" data-name="Ankit Kumar Pandey" data-id="TCA2301096"
+                data-role="<i class='fas fa-cogs'></i> System Integration &amp; Logic" data-avatar="AK"
+                data-avatar-bg="linear-gradient(135deg,#10b981,#0ea5e9)"
+                data-desc="Responsible for core system integration and logic flow. Programmed the ESP32 to accurately read sensors and designed automated trigger rules for the relay pump and irrigation zones.">
+                <div class="team-avatar" style="background:linear-gradient(135deg,#10b981,#0ea5e9);">AK</div>
+                <div class="team-name">Ankit Kumar Pandey</div>
+                <div class="team-id">TCA2301096</div>
+                <div class="team-role"><i class="fas fa-cogs"></i> System Integration & Logic</div>
+            </div>
+
+            <div class="team-card" data-name="Azhar Hussain" data-id="TCA2301149"
+                data-role="<i class='fas fa-bug'></i> Testing &amp; Debugging" data-avatar="AH"
+                data-avatar-bg="linear-gradient(135deg,#10b981,#3b82f6)"
+                data-desc="Testing and Debugging specialist. Rigorously tested the circuit connections and logic across extreme simulated conditions on Wokwi and the real hardware to prevent any failures in the field.">
+                <div class="team-avatar" style="background:linear-gradient(135deg,#10b981,#3b82f6);">AH</div>
+                <div class="team-name">Azhar Hussain</div>
+                <div class="team-id">TCA2301149</div>
+                <div class="team-role"><i class="fas fa-bug"></i> Testing & Debugging</div>
+            </div>
+
+            <div class="team-card" data-name="Ansh Saxena" data-id="TCA2301109"
+                data-role="<i class='fas fa-file-alt'></i> Documentation &amp; Research" data-avatar="AS"
+                data-avatar-bg="linear-gradient(135deg,#f59e0b,#ef4444)"
+                data-desc="Managed project documentation, research, and testing procedures. Ensured all components met strict agricultural and technological standards during the prototype phase.">
+                <div class="team-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">AS</div>
+                <div class="team-name">Ansh Saxena</div>
+                <div class="team-id">TCA2301109</div>
+                <div class="team-role"><i class="fas fa-file-alt"></i> Documentation & Research</div>
+            </div>
+
+            <div class="team-card" data-name="Vaibhav Jain" data-id="TCA2301779"
+                data-role="<i class='fas fa-paint-brush'></i> Web/Mobile Interface" data-avatar="VJ"
+                data-avatar-bg="linear-gradient(135deg,#ec4899,#f59e0b)"
+                data-desc="Designed the Web and Mobile Interface architectures. Ensured the user experience (UX) to control the irrigation system was perfectly intuitive and visually state-of-the-art.">
+                <div class="team-avatar" style="background:linear-gradient(135deg,#ec4899,#f59e0b);">VJ</div>
+                <div class="team-name">Vaibhav Jain</div>
+                <div class="team-id">TCA2301779</div>
+                <div class="team-role"><i class="fas fa-paint-brush"></i> Web/Mobile Interface Design</div>
+            </div>
+            <div class="team-card" data-name="Ankush Vishnoi" data-id="TCA2301104"
+                data-role="<i class='fas fa-wifi'></i> IoT Development" data-avatar="AV"
+                data-avatar-bg="linear-gradient(135deg,#0ea5e9,#7c3aed)"
+                data-desc="Lead IoT Developer. Configured the Blynk cloud platform and established secure low-latency data streams between the ESP32 and mobile dashboards for remote 24/7 monitoring.">
+                <div class="team-avatar" style="background:linear-gradient(135deg,#0ea5e9,#7c3aed);">AV</div>
+                <div class="team-name">Ankush Vishnoi</div>
+                <div class="team-id">TCA2301104</div>
+                <div class="team-role"><i class="fas fa-wifi"></i> IoT Development</div>
+            </div>
+
+
+
+            <div class="team-card" data-name="Ashish Ahuja" data-id="TCA2301132"
+                data-role="<i class='fas fa-microchip'></i> Circuit Design" data-avatar="AA"
+                data-avatar-bg="linear-gradient(135deg,#8b5cf6,#06b6d4)"
+                data-desc="Circuit Design Expert. Prototyped the breadboard layout, calculated power requirements, and ensured safe voltage relay operations between the 5V digital signal modules and the mechanical water pump.">
+                <div class="team-avatar" style="background:linear-gradient(135deg,#8b5cf6,#06b6d4);">AA</div>
+                <div class="team-name">Ashish Ahuja</div>
+                <div class="team-id">TCA2301132</div>
+                <div class="team-role"><i class="fas fa-microchip"></i> Circuit Design</div>
+            </div>
+
+        </div>
+
+        <!-- Acknowledgement & Guide -->
+        <div style="margin-top:40px; padding:40px; background:var(--card); border:1px solid var(--glass-border); border-radius:20px; position:relative; overflow:hidden;"
+            class="reveal">
+            <div
+                style="position:absolute; top:0; left:0; width:4px; height:100%; background:linear-gradient(180deg, var(--blue2), var(--green));">
+            </div>
+            <div style="display:flex; flex-direction:column; gap:20px;">
+                <div
+                    style="display:flex; gap:20px; align-items:center; border-bottom:1px dashed var(--glass-border); padding-bottom:20px;">
+                    <div
+                        style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,var(--blue2),#0066cc);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:#fff;flex-shrink:0;box-shadow:0 10px 20px rgba(0,100,200,0.2);">
+                        AS
+                    </div>
+                    <div>
+                        <div
+                            style="font-size:0.75rem;color:var(--blue);font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">
+                            Project Guide</div>
+                        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700; color:var(--text);">
+                            Mr. Ajay Singh</div>
+                        <div style="color:var(--muted);font-size:0.9rem; margin-top:4px;"><i
+                                class="fas fa-university"></i> Faculty of Engineering &amp; Computing Sciences, TMU
+                            Moradabad</div>
+                    </div>
+                </div>
+                <div>
+                    <h4
+                        style="font-family:'Syne',sans-serif; font-size:1.1rem; margin-bottom:10px; color:var(--green2);">
+                        <i class="fas fa-quote-left" style="font-size:0.9rem; opacity:0.5; margin-right:8px;"></i>
+                        Acknowledgement
+                    </h4>
+                    <p style="color:var(--muted); font-size:1rem; line-height:1.7; max-width:800px; font-style:italic;">
+                        "We sincerely thank our project guide <strong style="color:var(--text);">Mr. Ajay Singh</strong>
+                        for his guidance, support, and valuable insights throughout the development of this IoT-based
+                        irrigation system. His mentorship played a key role in successfully completing this project."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- HOW IT WORKS -->
+    <section id="how">
+        <div class="section-label">System Flow</div>
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-sub">From sensor reading to pump activation — all automated in real time.</p>
+
+        <div class="steps">
+
+            <div class="step reveal">
+                <div class="step-num">01</div>
+                <div class="step-body">
+                    <div class="step-icon"><i class="fas fa-seedling"></i></div>
+                    <h3>Soil Sensor Detects Moisture</h3>
+                    <p>The soil moisture sensor continuously monitors ground water levels. When moisture drops below the
+                        threshold, it triggers the system to act.</p>
+                </div>
+            </div>
+
+            <div class="step reveal">
+                <div class="step-num">02</div>
+                <div class="step-body">
+                    <div class="step-icon"><i class="fas fa-microchip"></i></div>
+                    <h3>Data Sent to ESP32</h3>
+                    <p>The ESP32 microcontroller collects sensor readings from both the soil moisture sensor and the
+                        DHT11 (temperature & humidity) in real time.</p>
+                </div>
+            </div>
+
+            <div class="step reveal">
+                <div class="step-num">03</div>
+                <div class="step-body">
+                    <div class="step-icon"><i class="fas fa-brain"></i></div>
+                    <h3>Smart Decision Logic Runs</h3>
+                    <p>The embedded If/Then automation logic evaluates sensor data. If moisture is low, the system
+                        initiates irrigation. If adequate, it stays off.</p>
+                </div>
+            </div>
+
+            <div class="step reveal">
+                <div class="step-num">04</div>
+                <div class="step-body">
+                    <div class="step-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>Relay Controls Water Pump</h3>
+                    <p>A relay module switches the water pump ON/OFF based on the decision logic — ensuring precise,
+                        need-based water delivery to crops.</p>
+                </div>
+            </div>
+
+            <div class="step reveal">
+                <div class="step-num">05</div>
+                <div class="step-body">
+                    <div class="step-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>User Monitors via Mobile App</h3>
+                    <p>Live data is pushed to the Blynk IoT cloud. The farmer can monitor soil levels, temperature,
+                        humidity, and control the pump remotely from anywhere.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- COMPONENTS -->
+    <section id="components">
+        <div class="center">
+            <div class="section-label">Hardware Layout</div>
+            <h2 class="section-title">Physical Components</h2>
+            <p class="section-sub">Hardware parts used to build the AquaSync IoT system — with direct purchase links.
+            </p>
+        </div>
+
+        <div class="comp-grid reveal stagger-children">
+            <div class="comp-card">
+                <div class="comp-img-box" style="padding: 10px;"><img src="images/esp32.png" alt="ESP32 NodeMCU"
+                        style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;"></div>
+                <div class="comp-name">ESP32 (NodeMCU)</div>
+                <div class="comp-desc">Main microcontroller with built-in Wi-Fi & Bluetooth. The brain of the system
+                    that connects sensors to the cloud and controls the pump.</div>
+                <a class="comp-buy" href="https://www.amazon.in/s?k=ESP32+NodeMCU" target="_blank"><i
+                        class="fas fa-shopping-cart"></i> Buy on Amazon</a>
+            </div>
+
+            <div class="comp-card">
+                <div class="comp-img-box" style="padding: 10px;"><img src="images/soil.png" alt="Soil Moisture Sensor"
+                        style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;"></div>
+                <div class="comp-name">Soil Moisture Sensor</div>
+                <div class="comp-desc">Measures real-time soil moisture percentage. Triggers irrigation when moisture
+                    drops below the set threshold.</div>
+                <a class="comp-buy" href="https://www.amazon.in/s?k=soil+moisture+sensor" target="_blank"><i
+                        class="fas fa-shopping-cart"></i> Buy on Amazon</a>
+            </div>
+
+            <div class="comp-card">
+                <div class="comp-img-box" style="padding: 10px;"><img src="images/dht11.png" alt="DHT11 Sensor"
+                        style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;"></div>
+                <div class="comp-name">DHT11 Sensor</div>
+                <div class="comp-desc">Temperature and humidity sensor. Provides environmental data to optimize
+                    irrigation decisions based on weather conditions.</div>
+                <a class="comp-buy" href="https://www.amazon.in/s?k=DHT11+sensor" target="_blank"><i
+                        class="fas fa-shopping-cart"></i> Buy on Amazon</a>
+            </div>
+
+            <div class="comp-card">
+                <div class="comp-img-box" style="padding: 10px;"><img src="images/relay.png" alt="Relay Module"
+                        style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;"></div>
+                <div class="comp-name">Relay Module</div>
+                <div class="comp-desc">Acts as an electronic switch to control the water pump. Receives signals from
+                    ESP32 to turn the pump ON or OFF.</div>
+                <a class="comp-buy" href="https://www.amazon.in/s?k=relay+module+5v" target="_blank"><i
+                        class="fas fa-shopping-cart"></i> Buy on Amazon</a>
+            </div>
+
+            <div class="comp-card">
+                <div class="comp-img-box" style="padding: 10px;"><img src="images/pump.png" alt="Water Pump"
+                        style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;"></div>
+                <div class="comp-name">Water Pump (Mini)</div>
+                <div class="comp-desc">Small submersible water pump that delivers water to the field. Controlled
+                    automatically by the relay module based on sensor readings.</div>
+                <a class="comp-buy" href="https://www.amazon.in/s?k=mini+submersible+water+pump" target="_blank"><i
+                        class="fas fa-shopping-cart"></i> Buy on Amazon</a>
+            </div>
+
+            <div class="comp-card">
+                <div class="comp-img-box" style="padding: 10px;"><img
+                        src="C:\Users\Ankit Pandey\Downloads\Gemini_Generated_Image_p6f1irp6f1irp6f1.png"
+                        alt="Jumper Wires & Breadboard"
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></div>
+                <div class="comp-name">Jumper Wires & Breadboard</div>
+                <div class="comp-desc">Used for prototyping connections between ESP32, sensors, and relay module without
+                    soldering during development.</div>
+                <a class="comp-buy" href="https://www.amazon.in/s?k=jumper+wires+breadboard+kit" target="_blank"><i
+                        class="fas fa-shopping-cart"></i> Buy on Amazon</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- TECH STACK -->
+    <section id="tech">
+        <div class="center">
+            <div class="section-label">Technologies Used</div>
+            <h2 class="section-title">Tech Stack</h2>
+            <p class="section-sub">A powerful combination of hardware and software working in harmony.</p>
+        </div>
+
+        <div class="tech-grid reveal">
+            <div class="tech-panel hw">
+                <div class="tech-panel-title"><i class="fas fa-server"></i> Hardware Components</div>
+                <div class="tech-items">
+                    <div class="tech-item">
+                        <div class="tech-item-icon"><i class="fas fa-microchip"></i></div>
+                        <div>
+                            <div class="tech-item-name">ESP32 (NodeMCU)</div>
+                            <div class="tech-item-desc">Main controller with built-in Wi-Fi & Bluetooth</div>
+                        </div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-item-icon"><i class="fas fa-seedling"></i></div>
+                        <div>
+                            <div class="tech-item-name">Soil Moisture Sensor</div>
+                            <div class="tech-item-desc">Measures volumetric water content in soil</div>
+                        </div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-item-icon"><i class="fas fa-thermometer-half"></i></div>
+                        <div>
+                            <div class="tech-item-name">DHT11 Sensor</div>
+                            <div class="tech-item-desc">Temperature and humidity monitoring</div>
+                        </div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-item-icon"><i class="fas fa-plug"></i></div>
+                        <div>
+                            <div class="tech-item-name">Relay Module</div>
+                            <div class="tech-item-desc">High-current switch to control the pump</div>
+                        </div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-item-icon"><i class="fas fa-tint"></i></div>
+                        <div>
+                            <div class="tech-item-name">Water Pump</div>
+                            <div class="tech-item-desc">Delivers water to field on command</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tech-panel sw">
+                <div class="tech-panel-title"><i class="fas fa-code"></i> Software & Tools</div>
+                <div class="tech-items">
+                    <div class="tech-item">
+                        <div class="tech-item-icon"><i class="fas fa-pen-nib"></i></div>
+                        <div>
+                            <div class="tech-item-name">Arduino IDE</div>
+                            <div class="tech-item-desc">Programming environment for ESP32 firmware</div>
+                        </div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-item-icon"><i class="fas fa-cloud"></i></div>
+                        <div>
+                            <div class="tech-item-name">Blynk IoT Platform</div>
+                            <div class="tech-item-desc">Cloud dashboard & mobile app for remote control</div>
+                        </div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-item-icon"><i class="fas fa-flask"></i></div>
+                        <div>
+                            <div class="tech-item-name">Wokwi Simulation</div>
+                            <div class="tech-item-desc">Browser-based IoT circuit simulation & testing</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="divider"></div>
+
+    <!-- SIMULATION -->
+    <section id="simulation">
+        <div class="center">
+            <div class="section-label">Live Demo</div>
+            <h2 class="section-title">Wokwi Simulation</h2>
+            <p class="section-sub">See the system in action — no hardware needed.</p>
+        </div>
+
+        <div class="sim-card reveal">
+            <div class="sim-icon"><i class="fas fa-play"></i></div>
+            <h3 class="sim-title">Interactive IoT Simulation</h3>
+            <p class="sim-desc">
+                Our full circuit — ESP32, soil moisture sensor, DHT11, relay module, and water pump — is simulated live
+                on Wokwi. Interact with it right in your browser.
+            </p>
+            <a href="https://wokwi.com/projects/459370023991482369" target="_blank" class="btn-primary"
+                style="display:inline-flex;">
+                <i class="fas fa-external-link-alt"></i> Open Live Simulation on Wokwi
+            </a>
+            <div class="sim-url">🔗 https://wokwi.com/projects/459370023991482369</div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- PROTOTYPE -->
+    <section id="prototype">
+        <div class="section-label">Real Hardware</div>
+        <h2 class="section-title">Hardware Prototype</h2>
+        <p class="section-sub">The physical implementation of our IoT irrigation system.</p>
+
+        <div class="proto-card reveal"
+            style="padding: 24px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2);">
+            <h3 style="margin-bottom: 20px; font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 700;">
+                Hardware Assembled</h3>
+            <img src="images/hardware-prototype.jpg"
+                alt="Hardware Prototype showing sensors, relay setup and Blynk dashboard"
+                style="width: 100%; max-width: 900px; height: auto; border-radius: 12px; border: 1px dashed rgba(16, 185, 129, 0.3); display: block; margin: 0 auto; box-shadow: 0 10px 40px rgba(16, 185, 129, 0.1);">
+            <p style="margin-top: 20px; color: var(--muted); font-size: 0.95rem; max-width: none;">Working physical
+                layout combining the breadboard logic, real actuators, and the live Blynk mobile app interface.</p>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- FEATURES -->
+    <section id="features">
+        <div class="center">
+            <div class="section-label">Advantages</div>
+            <h2 class="section-title">Key Features</h2>
+            <p class="section-sub">Why SmartIrriga stands out from traditional irrigation methods.</p>
+        </div>
+
+        <div class="features-grid stagger-children">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-tint-slash"></i></div>
+                <div class="feature-title">Water Saving</div>
+                <p class="feature-desc">Smart threshold logic prevents over-irrigation — saving up to 40% of water
+                    compared to manual methods.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                <div class="feature-title">Full Automation</div>
+                <p class="feature-desc">Automated If/Then rules eliminate human error and deliver water exactly when the
+                    soil needs it.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-globe"></i></div>
+                <div class="feature-title">Remote Access</div>
+                <p class="feature-desc">Monitor and control your irrigation system from any smartphone, anywhere in the
+                    world via Blynk cloud.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-rupee-sign"></i></div>
+                <div class="feature-title">Cost Efficient</div>
+                <p class="feature-desc">Uses low-cost ESP32 and open-source platforms — making smart farming accessible
+                    to all farmers.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-leaf"></i></div>
+                <div class="feature-title">Eco Friendly</div>
+                <p class="feature-desc">Sustainable resource use reduces water wastage and protects the environment for
+                    future generations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="feature-title">Optimal Crop Health</div>
+                <p class="feature-desc">Precise irrigation based on real soil data prevents root rot and ensures maximum
+                    crop yield.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- FUTURE SCOPE -->
+    <section id="future">
+        <div class="section-label">What's Next</div>
+        <h2 class="section-title">Future Scope</h2>
+        <p class="section-sub">Planned enhancements to make SmartIrriga even smarter.</p>
+
+        <div class="future-grid stagger-children">
+            <div class="future-item">
+                <div class="future-num">01</div>
+                <div class="future-body">
+                    <h4><i class="fas fa-brain" style="color:var(--green);margin-right:8px;"></i>AI Prediction</h4>
+                    <p>Machine learning models to predict irrigation needs based on historical data and crop growth
+                        patterns.</p>
+                </div>
+            </div>
+            <div class="future-item">
+                <div class="future-num">02</div>
+                <div class="future-body">
+                    <h4><i class="fas fa-cloud-sun" style="color:var(--blue);margin-right:8px;"></i>Weather Integration
+                    </h4>
+                    <p>Connect to live weather APIs to pause irrigation before rain, saving even more water
+                        automatically.</p>
+                </div>
+            </div>
+            <div class="future-item">
+                <div class="future-num">03</div>
+                <div class="future-body">
+                    <h4><i class="fas fa-mobile-alt" style="color:var(--green);margin-right:8px;"></i>Dedicated Mobile
+                        App</h4>
+                    <p>A custom-built React Native app with analytics dashboard, alerts, and irrigation history graphs.
+                    </p>
+                </div>
+            </div>
+            <div class="future-item">
+                <div class="future-num">04</div>
+                <div class="future-body">
+                    <h4><i class="fas fa-microphone" style="color:var(--blue);margin-right:8px;"></i>Voice Control</h4>
+                    <p>Integration with Alexa and Google Assistant so farmers can manage irrigation with simple voice
+                        commands.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">Smart<span>Irriga</span></div>
+        <div class="footer-sub">Internet-Controlled Water Irrigation System Using IoT</div>
+
+        <div class="footer-info">
+            <strong>Course:</strong> LPBEI-III (BCALP230601) · BCA<br>
+            <strong>Project Guide:</strong> Mr. Ajay Singh<br>
+            <strong>Institution:</strong> Faculty of Engineering & Computing Sciences<br>
+            <strong>University:</strong> Teerthanker Mahaveer University, Moradabad <br>
+            <strong>Presented:</strong> 09 April 2026
+        </div>
+
+        <div style="margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <a href="https://wokwi.com/projects/459370023991482369" target="_blank"
+                style="color:var(--green);text-decoration:none;font-size:0.85rem;display:flex;align-items:center;gap:6px;"><i
+                    class="fas fa-external-link-alt"></i> Wokwi Simulation</a>
+        </div>
+
+        <div class="footer-copy">
+            Built with ❤️ by Team Ankit · BCA 2023–2026 · TMU Moradabad
+        </div>
+    </footer>
+
+    <!-- MODAL -->
+    <div id="teamModal" class="team-modal">
+        <div class="modal-overlay" onclick="closeModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <div id="modalAvatar" class="team-avatar"
+                    style="width: 80px; height: 80px; font-size: 2rem; margin: 0 auto 16px;"></div>
+                <h3 id="modalName" class="team-name" style="font-size: 1.4rem;"></h3>
+                <div id="modalId" class="team-id" style="font-size: 0.85rem;"></div>
+                <div id="modalRole" class="team-role" style="font-size: 0.85rem; margin-top: 5px;"></div>
+            </div>
+            <div class="modal-body">
+                <h4>About Role</h4>
+                <p id="modalDesc"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cursor glow
+        const glow = document.getElementById('cursorGlow');
+        document.addEventListener('mousemove', e => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        // Scroll reveal
+        const reveals = document.querySelectorAll('.reveal, .stagger-children');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+        reveals.forEach(el => observer.observe(el));
+
+        // Active nav highlight
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-links a');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(s => {
+                if (window.scrollY >= s.offsetTop - 200) current = s.id;
+            });
+            navLinks.forEach(a => {
+                a.style.color = a.getAttribute('href') === '#' + current ? 'var(--green2)' : '';
+            });
+        });
+
+        // Smooth counter animation for hero stats
+        function animateCount(el, target, suffix = '') {
+            let current = 0;
+            const step = target / 50;
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    el.textContent = target + suffix;
+                    clearInterval(timer);
+                } else {
+                    el.textContent = Math.floor(current) + suffix;
+                }
+            }, 30);
+        }
+
+        // Animate on load
+        setTimeout(() => {
+            const stats = document.querySelectorAll('.hero-stat-num');
+            const vals = [[6, ''], [5, '+'], [40, '%'], [24, '/7']];
+            stats.forEach((s, i) => {
+                if (i < vals.length) {
+                    if (vals[i][1] === '/7') { s.textContent = '24/7'; return; }
+                    animateCount(s, vals[i][0], vals[i][1]);
+                }
+            });
+        }, 500);
+
+        // Modal Logic
+        function openModal(card) {
+            document.getElementById('modalAvatar').innerHTML = card.dataset.avatar;
+            document.getElementById('modalAvatar').style.background = card.dataset.avatarBg;
+            document.getElementById('modalName').innerText = card.dataset.name;
+            document.getElementById('modalId').innerText = card.dataset.id;
+            document.getElementById('modalRole').innerHTML = card.dataset.role;
+            document.getElementById('modalDesc').innerText = card.dataset.desc;
+            document.getElementById('teamModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('teamModal').classList.remove('active');
+        }
+
+        document.querySelectorAll('.team-card').forEach(card => {
+            card.addEventListener('click', () => openModal(card));
+        });
+    </script>
+</body>
+
+</html>
